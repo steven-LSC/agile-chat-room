@@ -1,2 +1,7 @@
-# Agile-Chatroom
-A chatroom project for agile class.
+# Agile Chat Room
+A chat room project for agile class.
+## How to run it
+```sh
+npm install
+npm run serve
+```
