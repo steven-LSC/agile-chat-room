@@ -9,16 +9,15 @@
         @submit.prevent="Login"
       >
         <div class="form-inner">
-          <h1>Login to FireChat</h1>
-          <label for="username">Username</label>
+          <h1>準備進入{{roomName}}聊天室</h1>
+          <label for="username">暱稱</label>
           <input
             type="text"
             v-model="inputUsername"
-            placeholder="Please enter your username..."
           />
           <input
             type="submit"
-            value="Login"
+            value="Go"
           />
         </div>
       </form>
@@ -34,7 +33,7 @@
         <button
           class="logout"
           @click="Logout"
-        >Logout</button>
+        >Out</button>
         <h1>Welcome, {{ state.username }}</h1>
       </header>
 
@@ -90,6 +89,16 @@ export default {
       // var container = this.$el.querySelector("#info-box");
       // container.scrollTop = container.scrollHeight;
     },
+  },
+  computed:{
+    roomName(){
+      const map = {
+        workout:"運動",
+        date: "約會",
+        movie: "電影"
+      }
+      return map[this.$route.params.class];
+    }
   },
   setup() {
     const inputUsername = ref("");
