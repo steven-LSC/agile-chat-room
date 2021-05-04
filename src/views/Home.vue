@@ -1,27 +1,22 @@
 <template>
   <base-layout>
-    <ion-list>
-      <ion-item router-link="/home/movie">電影</ion-item>
-      <ion-item router-link="/home/date">約會</ion-item>
-      <ion-item router-link="/home/workout">運動</ion-item>
-    </ion-list>
+    <h1 style="text-align: center; margin-top:20vh;">選擇你要進入的聊天室</h1>
+    <section style="margin-top:40px;">
+      <ion-button @click="choose('movie')" color="tertiary" expand="block" style="margin-top: 20px;">電影</ion-button>
+      <ion-button @click="choose('date')" color="tertiary" expand="block" style="margin-top: 20px;">約會</ion-button>
+      <ion-button @click="choose('workout')" color="tertiary" expand="block" style="margin-top: 20px;">運動</ion-button>
+    </section>
   </base-layout>
 </template>
 
 <script>
-import {
-  IonList,
-  IonItem,
-} from "@ionic/vue";
-import { defineComponent } from "vue";
-
-export default defineComponent({
-  name: "Home",
-  components: {
-    IonList,
-    IonItem,
-  },
-});
+export default {
+  methods:{
+    choose(room){
+      this.$router.push(`/home/${room}`);
+    }
+  }
+}
 </script>
 
 <style scoped>

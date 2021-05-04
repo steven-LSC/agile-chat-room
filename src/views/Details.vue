@@ -9,6 +9,7 @@
         @submit.prevent="Login"
       >
         <div class="form-inner">
+          <p @click="back" style="color: #aaa;">back</p>
           <h1>準備進入{{roomName}}聊天室</h1>
           <label for="username">暱稱</label>
           <input
@@ -73,23 +74,6 @@ import { useRoute } from "vue-router";
 import db from "../db";
 
 export default {
-  methods: {
-    goBottom() {
-      // console.log(this.$el.querySelector("#infoBox").scrollHeight);
-      // const container = this.$el.querySelector("#infoBox");
-      // console.log(container.scrollTop , container.scrollHeight);
-      //console.log($(window).scrollTop());
-      // container.scrollTop = container.scrollHeight
-      // console.log(this.$refs.infoBox.scrollTop);
-      // this.$refs.infoBox.clientTop = this.$refs.infoBox.clientHeight;
-      // const tmp = this.$refs.infoBox;
-      // tmp.scrollTop = tmp.scrollHeight;
-      // tmp.scrollTop += 20;
-      // console.log(tmp.scrollHeight, tmp.scrollTop);
-      // var container = this.$el.querySelector("#info-box");
-      // container.scrollTop = container.scrollHeight;
-    },
-  },
   computed:{
     roomName(){
       const map = {
@@ -108,14 +92,15 @@ export default {
       username: "",
       messages: [],
     });
-
+    function back(){
+      window.history.go(-1);
+    }
     const Login = () => {
       if (inputUsername.value != "" || inputUsername.value != null) {
         state.username = inputUsername.value;
         inputUsername.value = "";
       }
     };
-
     const Logout = () => {
       state.username = "";
     };
@@ -161,6 +146,7 @@ export default {
       inputMessage,
       SendMessage,
       Logout,
+      back
     };
   },
 };
