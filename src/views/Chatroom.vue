@@ -1,97 +1,82 @@
 <template>
-  <ion-page style="backgroud: white;">
-    <ion-header :translucent="true">
-      <ion-toolbar>
-        <ion-title>Let's hang out.</ion-title>
-       
-      </ion-toolbar>
-    </ion-header>
-    
-    <ion-content :fullscreen="true">
-      <ion-header collapse="condense">
-        <ion-toolbar>
-          <ion-title size="large">Blank</ion-title>
-        </ion-toolbar>
-      </ion-header>
-      <section>
-       <!-- <button @click="$router.push('/home')">back</button> -->
-        <div
-          class="view login"
-          v-if="state.username === '' || state.username === null"
-        >
-        <!-- <button @click="$router.push('home')"> back</button> -->
-          <form
-            class="login-form"
-            @submit.prevent="Login"
-          >
-            <div class="form-inner">
-              <h1>Login to FireChat</h1>
-              <label for="username">Username</label>
-              <input
-                type="text"
-                v-model="inputUsername"
-                placeholder="Please enter your username..."
-              />
-              <input
-                type="submit"
-                value="Login"
-              />
-            </div>
-          </form>
+  <base-layout>
+    <div
+    class="view login"
+    v-if="state.username === '' || state.username === null"
+  >
+    <form
+      class="login-form"
+      @submit.prevent="Login"
+    >
+      <div class="form-inner">
+        <h1>Login to FireChat</h1>
+        <label for="username">Username</label>
+        <input
+          type="text"
+          v-model="inputUsername"
+          placeholder="Please enter your username..."
+        />
+        <input
+          type="submit"
+          value="Login"
+        />
+      </div>
+    </form>
+  </div>
+
+  <div
+    class="view chat"
+    ref="infoBox"
+    v-else
+  >
+    <header>
+      <button
+        class="logout"
+        @click="Logout"
+      >Logout</button>
+      <h1>Welcome, {{ state.username }}</h1>
+    </header>
+
+    <section class="chat-box">
+      <div
+        v-for="message in state.messages"
+        :key="message.key"
+        :class="(message.username == state.username ? 'message current-user' : 'message')"
+      >
+        <div class="message-inner">
+          <div class="username">{{ message.username }}</div>
+          <div class="content">{{ message.content }}</div>
         </div>
+      </div>
+    </section>
 
-        <div
-          class="view chat"
-          ref="infoBox"
-          v-else
-        >
-          <header>
-            <button
-              class="logout"
-              @click="Logout"
-            >Logout</button>
-            <h1>Welcome, {{ state.username }}</h1>
-          </header>
-
-          <section class="chat-box">
-            <div
-              v-for="message in state.messages"
-              :key="message.key"
-              :class="(message.username == state.username ? 'message current-user' : 'message')"
-            >
-              <div class="message-inner">
-                <div class="username">{{ message.username }}</div>
-                <div class="content">{{ message.content }}</div>
-              </div>
-            </div>
-          </section>
-
-          <footer>
-            <form @submit.prevent="SendMessage">
-              <input
-                type="text"
-                v-model="inputMessage"
-                placeholder="Write a message..."
-              />
-              <input
-                type="submit"
-                value="Send"
-              />
-            </form>
-          </footer>
-        </div>
-      </section>
-    </ion-content>
-  </ion-page>
+    <footer>
+      <form @submit.prevent="SendMessage">
+        <input
+          type="text"
+          v-model="inputMessage"
+          placeholder="Write a message..."
+        />
+        <input
+          type="submit"
+          value="Send"
+        />
+      </form>
+    </footer>
+  </div>
+  </base-layout>
+  
 </template>
 
 <script>
 import { reactive, onMounted, ref } from "vue";
 import db from "../db";
+import BaseLayout from './BaseLayout.vue';
 // import TheCategory from "./components/TheCategory.vue";
 //import TheLogin from "./components/TheLogin.vue";
 
 export default {
+  components: { BaseLayout },
   //components: { TheLogin },
   setup() {
     const inputUsername = ref("");

@@ -1,79 +1,77 @@
 <template>
   <base-layout>
     <div
-      class="view login"
-      v-if="state.username === '' || state.username === null"
+    class="view login"
+    v-if="state.username === '' || state.username === null"
+  >
+    <form
+      class="login-form"
+      @submit.prevent="Login"
     >
-      <form
-        class="login-form"
-        @submit.prevent="Login"
+      <div class="form-inner">
+        <p @click="back">重選</p>
+        <h1>進入{{roomName}}聊天室</h1>
+        <label for="username">暱稱</label>
+        <input
+          type="text"
+          v-model="inputUsername"
+        />
+        <input
+          type="submit"
+          value="Go"
+        />
+      </div>
+    </form>
+  </div>
+
+  <div
+    class="view chat"
+    ref="infoBox"
+    v-else
+  >
+    <header>
+      <h1>Welcome, {{ state.username }}</h1>
+    </header>
+
+    <section class="chat-box">
+      <div
+        v-for="message in state.messages"
+        :key="message.key"
+        :class="(message.username == state.username ? 'message current-user' : 'message other-user')"
       >
-        <div class="form-inner">
-          <p @click="back" style="color: #aaa;">back</p>
-          <h1>準備進入{{roomName}}聊天室</h1>
-          <label for="username">暱稱</label>
-          <input
-            type="text"
-            v-model="inputUsername"
-          />
-          <input
-            type="submit"
-            value="Go"
-          />
+        <div class="message-inner">
+          <div class="username">{{ message.username }}</div>
+          <div class="content">{{ message.content }}</div>
         </div>
+      </div>
+    </section>
+
+    <footer>
+      <p @click="out">Out</p>
+      <form @submit.prevent="SendMessage">
+        <input
+          type="text"
+          v-model="inputMessage"
+          placeholder="Write a message..."
+        />
+        <input
+          type="submit"
+          value="Send"
+        />
       </form>
-    </div>
-
-    <div
-      class="view chat"
-      ref="infoBox"
-      style="overflow-y: hidden;"
-      v-else
-    >
-      <header>
-        <button
-          class="logout"
-          @click="Logout"
-        >Out</button>
-        <h1>Welcome, {{ state.username }}</h1>
-      </header>
-
-      <section class="chat-box">
-        <div
-          v-for="message in state.messages"
-          :key="message.key"
-          :class="(message.username == state.username ? 'message current-user' : 'message')"
-        >
-          <div class="message-inner">
-            <div class="username">{{ message.username }}</div>
-            <div class="content">{{ message.content }}</div>
-          </div>
-        </div>
-      </section>
-
-      <footer>
-        <form @submit.prevent="SendMessage">
-          <input
-            type="text"
-            v-model="inputMessage"
-            placeholder="Write a message..."
-          />
-          <input
-            type="submit"
-            value="Send"
-          />
-        </form>
-      </footer>
-    </div>
+    </footer>
+  </div>
   </base-layout>
+  
 </template>
 
 <script>
 import { reactive, onMounted, ref } from "vue";
-import { useRoute } from "vue-router";
 import db from "../db";
+import BaseLayout from './BaseLayout.vue';
 
 export default {
+  components: { BaseLayout },
   computed:{
     roomName(){
       const map = {
@@ -87,7 +85,6 @@ export default {
   setup() {
     const inputUsername = ref("");
     const inputMessage = ref("");
-    const route = useRoute();
     const state = reactive({
       username: "",
       messages: [],
@@ -95,19 +92,20 @@ export default {
     function back(){
       window.history.go(-1);
     }
+
     const Login = () => {
       if (inputUsername.value != "" || inputUsername.value != null) {
         state.username = inputUsername.value;
         inputUsername.value = "";
       }
     };
-    const Logout = () => {
+
+    const out = () => {
       state.username = "";
     };
 
     const SendMessage = () => {
-      console.log(route.params.class + " messages");
-      const messagesRef = db.database().ref(route.params.class + " messages");
+      const messagesRef = db.database().ref("messages");
 
       if (inputMessage.value === "" || inputMessage.value === null) {
         return;
@@ -121,9 +119,10 @@ export default {
       messagesRef.push(message);
       inputMessage.value = "";
     };
+
     onMounted(() => {
-      console.log(route.params.class + " messages");
-      const messagesRef = db.database().ref(route.params.class + " messages");
+      const messagesRef = db.database().ref("messages");
+
       messagesRef.on("value", (snapshot) => {
         const data = snapshot.val();
         let messages = [];
@@ -145,7 +144,7 @@ export default {
       state,
       inputMessage,
       SendMessage,
-      Logout,
+      out,
       back
     };
   },
@@ -167,7 +166,7 @@ export default {
   display: flex;
   justify-content: center;
   min-height: 100vh;
-  background-color: #5269ea;
+  background-color: #1e59c7;
 
   &.login {
     align-items: center;
@@ -183,10 +182,16 @@ export default {
         border-radius: 16px;
         box-shadow: 0px 6px 12px rgba(0, 0, 0, 0.2);
 
+        p{
+          color: rgb(88, 87, 87);
+          // text-align: center;
+        }
+
         h1 {
-          color: #aaa;
+          color: rgb(88, 87, 87);
           font-size: 28px;
           margin-bottom: 30px;
+          text-align: center;
         }
 
         label {
@@ -232,7 +237,7 @@ export default {
           display: block;
           width: 100%;
           padding: 10px 15px;
-          background-color: #5269ea;
+          background-color: #1e59c7;
           border-radius: 8px;
 
           color: #fff;
@@ -242,7 +247,7 @@ export default {
 
         &:focus-within {
           label {
-            color: #ea526f;
+            color: #db4a4a;
           }
 
           input[type="text"] {
@@ -266,29 +271,15 @@ export default {
       display: block;
       width: 100%;
       padding: 50px 30px 10px;
-
-      .logout {
-        position: absolute;
-        top: 15px;
-        right: 15px;
-        appearance: none;
-        border: none;
-        outline: none;
-        background: none;
-
-        color: #fff;
-        font-size: 18px;
-        margin-bottom: 10px;
-        text-align: right;
-      }
-
+      
       h1 {
         color: #fff;
+        text-align: center;
       }
     }
 
     .chat-box {
-      border-radius: 24px 24px 0px 0px;
+      border-radius: 12px 12px 0px 0px;
       background-color: #fff;
       box-shadow: 0px 0px 12px rgba(100, 100, 100, 0.2);
       flex: 1 1 100%;
@@ -297,7 +288,7 @@ export default {
       .message {
         display: flex;
         margin-bottom: 15px;
-
+        
         .message-inner {
           .username {
             color: #888;
@@ -311,8 +302,7 @@ export default {
             display: inline-block;
             padding: 10px 20px;
             background-color: #f3f3f3;
-            border-radius: 999px;
-            width: 30vh;
+            border-radius: 10px;
             color: #333;
             font-size: 18px;
             line-height: 1.2em;
@@ -326,15 +316,26 @@ export default {
           text-align: right;
 
           .message-inner {
-            max-width: 75%;
-
+            max-width: 100%;
             .content {
+              max-width: 100%;
               color: #fff;
               font-weight: 600;
-              background-color: #5269ea;
+              background-color: #1e59c7;
             }
           }
         }
+
+        &.other-user {
+          text-align: left;
+          .message-inner {
+            max-width: 100%;
+            .content {
+              max-width: 100%;
+            }
+          }
+        }
+
       }
     }
 
@@ -344,6 +345,17 @@ export default {
       background-color: #fff;
       padding: 30px;
       box-shadow: 0px 0px 12px rgba(100, 100, 100, 0.2);
+
+      p{
+          width: 15%;
+          text-align: center;
+          margin-bottom:10px;
+          background-color: #363434;
+          color: #fff;
+          font-size: 18px;
+          border-radius: 5px;
+          font-weight: 700;
+      }
 
       form {
         display: flex;
@@ -385,7 +397,7 @@ export default {
           padding: 10px 15px;
           border-radius: 0px 8px 8px 0px;
 
-          background-color: #131629;
+          background-color: #363434;
 
           color: #fff;
           font-size: 18px;

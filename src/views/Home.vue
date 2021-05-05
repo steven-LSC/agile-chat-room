@@ -2,9 +2,9 @@
   <base-layout>
     <h1 style="text-align: center; margin-top:20vh;">選擇你要進入的聊天室</h1>
     <section style="margin-top:40px;">
-      <ion-button @click="choose('movie')" color="tertiary" expand="block" style="margin-top: 20px;">電影</ion-button>
-      <ion-button @click="choose('date')" color="tertiary" expand="block" style="margin-top: 20px;">約會</ion-button>
-      <ion-button @click="choose('workout')" color="tertiary" expand="block" style="margin-top: 20px;">運動</ion-button>
+      <ion-button @click="choose('movie')" color="tertiary" expand="block" >電影</ion-button>
+      <ion-button @click="choose('date')" color="tertiary" expand="block" >約會</ion-button>
+      <ion-button @click="choose('workout')" color="tertiary" expand="block">運動</ion-button>
     </section>
   </base-layout>
 </template>
@@ -23,6 +23,11 @@ export default {
 :root {
   --ion-safe-area-top: 20px;
   --ion-safe-area-bottom: 22px;
+}
+
+ion-button{
+  margin-top: 20px;
+  font-size: 20px;
 }
 
 header {
