@@ -90,9 +90,6 @@ export default {
       username: "",
       messages: [],
     });
-    function back(){
-      window.history.go(-1);
-    }
 
     const Login = () => {
       if (inputUsername.value != "" || inputUsername.value != null) {
@@ -148,7 +145,6 @@ export default {
       inputMessage,
       SendMessage,
       out,
-      back
     };
   },
 };
