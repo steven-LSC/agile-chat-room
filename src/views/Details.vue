@@ -1,87 +1,81 @@
 <template>
-  <base-layout>
-    <div
-    class="view login"
-    v-if="state.username === '' || state.username === null"
-  >
-    <form
-      class="login-form"
-      @submit.prevent="Login"
-    >
-      <div class="form-inner">
-        <p @click="$emit('back')">重選</p>
-        <h1>進入{{roomName}}聊天室</h1>
-        <label for="username">暱稱</label>
-        <input
-          type="text"
-          v-model="inputUsername"
-        />
-        <input
-          type="submit"
-          value="Go"
-        />
-      </div>
-    </form>
-  </div>
-
-  <div
-    class="view chat"
-    ref="infoBox"
-    v-else
-  >
-    <header>
-      <h1>Welcome, {{ state.username }}</h1>
-    </header>
-
-    <section class="chat-box">
+  <ion-page>
+    <ion-content>
       <div
-        v-for="message in state.messages"
-        :key="message.key"
-        :class="(message.username == state.username ? 'message current-user' : 'message other-user')"
+        class="view login"
+        v-if="state.username === '' || state.username === null"
       >
-        <div class="message-inner">
-          <div class="username">{{ message.username }}</div>
-          <div class="content">{{ message.content }}</div>
-        </div>
+        <form class="login-form" @submit.prevent="Login">
+          <div class="form-inner">
+            <h1>進入{{ roomName }}聊天室</h1>
+            <label for="username">暱稱</label>
+            <input type="text" v-model="inputUsername" />
+            <p @click="$emit('back')">重選</p>
+            <!-- <input type="submit" value="Go" /> -->
+          </div>
+        </form>
       </div>
-    </section>
 
-    <footer>
-      <p @click="out">Out</p>
-      <form @submit.prevent="SendMessage">
-        <input
-          type="text"
-          v-model="inputMessage"
-          placeholder="Write a message..."
-        />
-        <input
-          type="submit"
-          value="Send"
-        />
-      </form>
-    </footer>
-  </div>
-  </base-layout>
-  
+      <div class="view chat" ref="infoBox" id="view_chat" v-else>
+        <header>
+          <h1>Welcome, {{ state.username }}</h1>
+        </header>
+
+        <section class="chat-box">
+          <div
+            v-for="message in state.messages"
+            :key="message.key"
+            :class="
+              message.username == state.username
+                ? 'message current-user'
+                : 'message other-user'
+            "
+          >
+            <div class="message-inner">
+              <div class="username">{{ message.username }}</div>
+              <div class="content">{{ message.content }}</div>
+            </div>
+          </div>
+        </section>
+
+        <footer>
+          <p @click="out">Out</p>
+          <p @click="toBottom">Bottom</p>
+          <p @click="toTop">Top</p>
+          <form @submit.prevent="SendMessage">
+            <input
+              type="text"
+              v-model="inputMessage"
+              placeholder="Write a message..."
+            />
+            <!-- <input type="submit" value="Submit" /> -->
+          </form>
+        </footer>
+      </div>
+    </ion-content>
+  </ion-page>
 </template>
 
 <script>
 import { reactive, onMounted, ref } from "vue";
 import db from "../db";
-import BaseLayout from './BaseLayout.vue';
+import { IonContent, IonPage } from "@ionic/vue";
 
 export default {
-  props: ['room'],
-  components: { BaseLayout },
-  computed:{
-    roomName(){
+  components: {
+    IonContent,
+    IonPage,
+  },
+  props: ["room"],
+  computed: {
+    roomName() {
       const map = {
-        workout:"運動",
+        workout: "運動",
         date: "約會",
-        movie: "電影"
-      }
+        movie: "電影",
+      };
       return map[this.room];
-    }
+    },
   },
   setup: (props) => {
     const inputUsername = ref("");
@@ -115,9 +109,21 @@ export default {
         content: inputMessage.value,
       };
 
-      messagesRef.push(message);
-      inputMessage.value = "";
+      messagesRef.push(message).then(() => {
+        toBottom();
+        inputMessage.value = "";
+      });
     };
+
+    function toBottom() {
+      const myDiv = document.getElementById("view_chat");
+      myDiv.scrollIntoView(false);
+    }
+
+    function toTop() {
+      const myDiv = document.getElementById("view_chat");
+      myDiv.scrollIntoView(true);
+    }
 
     onMounted(() => {
       const dbRoomName = props.room + " messages";
@@ -145,6 +151,8 @@ export default {
       inputMessage,
       SendMessage,
       out,
+      toBottom,
+      toTop
     };
   },
 };
@@ -181,9 +189,22 @@ export default {
         border-radius: 16px;
         box-shadow: 0px 6px 12px rgba(0, 0, 0, 0.2);
 
-        p{
-          color: rgb(88, 87, 87);
-          // text-align: center;
+        p {
+          appearance: none;
+          border: none;
+          outline: none;
+          background: none;
+
+          display: block;
+          width: 100%;
+          padding: 10px 15px;
+          background-color: #1e59c7;
+          border-radius: 8px;
+
+          color: #fff;
+          font-size: 18px;
+          font-weight: 700;
+          text-align: center;
         }
 
         h1 {
@@ -270,7 +291,7 @@ export default {
       display: block;
       width: 100%;
       padding: 50px 30px 10px;
-      
+
       h1 {
         color: #fff;
         text-align: center;
@@ -287,7 +308,7 @@ export default {
       .message {
         display: flex;
         margin-bottom: 15px;
-        
+
         .message-inner {
           .username {
             color: #888;
@@ -334,7 +355,6 @@ export default {
             }
           }
         }
-
       }
     }
 
@@ -345,15 +365,17 @@ export default {
       padding: 30px;
       box-shadow: 0px 0px 12px rgba(100, 100, 100, 0.2);
 
-      p{
-          width: 15%;
-          text-align: center;
-          margin-bottom:10px;
-          background-color: #363434;
-          color: #fff;
-          font-size: 18px;
-          border-radius: 5px;
-          font-weight: 700;
+      p {
+        margin-right: 10px;
+        display: inline;
+        width: 50px;
+        padding: 0px 5px 0px 5px;
+        text-align: center;
+        background-color: #363434;
+        color: #fff;
+        font-size: 18px;
+        border-radius: 5px;
+        font-weight: 700;
       }
 
       form {
@@ -370,8 +392,8 @@ export default {
           display: block;
           width: 100%;
           padding: 10px 15px;
-          border-radius: 8px 0px 0px 8px;
-
+          border-radius: 8px 8px 8px 8px;
+          margin-top: 10px;
           color: #333;
           font-size: 18px;
 
@@ -391,7 +413,6 @@ export default {
           border: none;
           outline: none;
           background: none;
-
           display: block;
           padding: 10px 15px;
           border-radius: 0px 8px 8px 0px;

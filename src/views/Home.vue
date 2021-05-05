@@ -12,10 +12,11 @@
 
 <script>
 import Details from './Details';
-
+import { IonButton} from "@ionic/vue";
 export default {
   components:{
-    Details
+    Details,
+    IonButton
   },
   data(){
     return{
