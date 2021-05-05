@@ -10,10 +10,10 @@ const routes = [
     path: '/home',
     component: Home,
   },
-  {
-    path: '/home/:class',
-    component: () => import('../views/Details.vue')
-  }
+  // {
+  //   path: '/home/:class',
+  //   component: () => import('../views/Details.vue')
+  // }
 ]
 
 const router = createRouter({

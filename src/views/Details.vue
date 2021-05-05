@@ -9,7 +9,7 @@
       @submit.prevent="Login"
     >
       <div class="form-inner">
-        <p @click="back">重選</p>
+        <p @click="$emit('back')">重選</p>
         <h1>進入{{roomName}}聊天室</h1>
         <label for="username">暱稱</label>
         <input

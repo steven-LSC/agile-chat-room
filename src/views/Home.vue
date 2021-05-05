@@ -1,5 +1,6 @@
 <template>
-  <base-layout>
+  <Details v-if="room !== null" @back="back"></Details>
+  <base-layout v-else>
     <h1 style="text-align: center; margin-top:20vh;">選擇你要進入的聊天室</h1>
     <section style="margin-top:40px;">
       <ion-button @click="choose('movie')" color="tertiary" expand="block" >電影</ion-button>
@@ -10,11 +11,24 @@
 </template>
 
 <script>
+import Details from './Details';
+
 export default {
+  components:{
+    Details
+  },
+  data(){
+    return{
+      room: null,
+    }
+  },
   methods:{
     choose(room){
-      this.$router.push(`/home/${room}`);
-    }
+      this.room = room;
+    },
+    back(){
+      this.room = null;
+    },
   }
 }
 </script>
