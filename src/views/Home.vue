@@ -1,5 +1,5 @@
 <template>
-  <Details v-if="room !== null" @back="back"></Details>
+  <Details v-if="room !== null" @back="back" :room="room"></Details>
   <base-layout v-else>
     <h1 style="text-align: center; margin-top:20vh;">選擇你要進入的聊天室</h1>
     <section style="margin-top:40px;">

@@ -71,6 +71,7 @@ import db from "../db";
 import BaseLayout from './BaseLayout.vue';
 
 export default {
+  props: ['room'],
   components: { BaseLayout },
   computed:{
     roomName(){
@@ -79,10 +80,10 @@ export default {
         date: "約會",
         movie: "電影"
       }
-      return map[this.$route.params.class];
+      return map[this.room];
     }
   },
-  setup() {
+  setup: (props) => {
     const inputUsername = ref("");
     const inputMessage = ref("");
     const state = reactive({
@@ -105,7 +106,8 @@ export default {
     };
 
     const SendMessage = () => {
-      const messagesRef = db.database().ref("messages");
+      const dbRoomName = props.room + " messages";
+      const messagesRef = db.database().ref(dbRoomName);
 
       if (inputMessage.value === "" || inputMessage.value === null) {
         return;
@@ -121,7 +123,8 @@ export default {
     };
 
     onMounted(() => {
-      const messagesRef = db.database().ref("messages");
+      const dbRoomName = props.room + " messages";
+      const messagesRef = db.database().ref(dbRoomName);
 
       messagesRef.on("value", (snapshot) => {
         const data = snapshot.val();
