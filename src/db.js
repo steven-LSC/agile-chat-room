@@ -2,12 +2,12 @@ import firebase from "firebase/app";
 import "firebase/database";
 
 const config = {
-	apiKey: "AIzaSyBH2cUEKsLhAGMOvs0vUGnc8Puw05SfWXo",
-    authDomain: "mixed-vue.firebaseapp.com",
-    projectId: "mixed-vue",
-    storageBucket: "mixed-vue.appspot.com",
-    messagingSenderId: "583679719723",
-    appId: "1:583679719723:web:d2eb99ebedf38bd07ced6e"
+	apiKey: "AIzaSyDeBU9JukjJQH9nMzJzkj_AMCtTDMhFTTQ",
+    authDomain: "aloha-pwa.firebaseapp.com",
+    projectId: "aloha-pwa",
+    storageBucket: "aloha-pwa.appspot.com",
+    messagingSenderId: "603412586600",
+    appId: "1:603412586600:web:dd09fd217e07a8441c5bdd"
 }
 
 const db = firebase.initializeApp(config);
