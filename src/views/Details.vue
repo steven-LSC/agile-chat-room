@@ -53,7 +53,7 @@
         </section>
 
         <footer>
-          <p @click="out"><i class="fa fa-sign-out fa-rotate-180" aria-hidden="true"></i>Out</p>
+          <p @click="out"><i class="fa fa-sign-out fa-rotate-180" aria-hidden="true"></i> Out</p>
           <p @click="toBottom" class="right-btn"><i class="fa fa-arrow-down" aria-hidden="true"></i></p>
           <p @click="toTop" class="right-btn"><i class="fa fa-arrow-up" aria-hidden="true"></i></p>
           <form @submit.prevent="SendMessage">
@@ -316,9 +316,9 @@ export default {
         //Make the fa-times button
         .closebtn {
           position: relative;
-          top: -50px;
+          top: -30px;
           right: -10px;
-          font-size: 60px;
+          font-size: 35px;
           cursor: pointer;
           color: black;
         }
