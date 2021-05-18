@@ -1,16 +1,30 @@
 <template>
   <ion-page>
     <ion-content>
+
+      <div>
+      <!-- Place the css linek reference-->
+      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+      <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+      </div>
+
+
       <div
         class="view login"
         v-if="state.username === '' || state.username === null"
       >
         <form class="login-form" @submit.prevent="Login">
           <div class="form-inner">
+            <span class="closebtn" @click="$emit('back')">×</span>
             <h1>進入{{ roomName }}聊天室</h1>
             <label for="username">暱稱</label>
             <input type="text" v-model="inputUsername" />
-            <p @click="$emit('back')">重選</p>
+            <!-- <p @click="$emit('back')">重選</p> -->
+
+
+            <button type="submit">
+              進入
+            </button>
             <!-- <input type="submit" value="Go" /> -->
           </div>
         </form>
@@ -39,15 +53,19 @@
         </section>
 
         <footer>
-          <p @click="out">Out</p>
-          <p @click="toBottom">Bottom</p>
-          <p @click="toTop">Top</p>
+          <p @click="out"><i class="fa fa-sign-out fa-rotate-180" aria-hidden="true"></i>Out</p>
+          <p @click="toBottom" class="right-btn"><i class="fa fa-arrow-down" aria-hidden="true"></i></p>
+          <p @click="toTop" class="right-btn"><i class="fa fa-arrow-up" aria-hidden="true"></i></p>
           <form @submit.prevent="SendMessage">
             <input
               type="text"
               v-model="inputMessage"
               placeholder="Write a message..."
             />
+            <!-- arrow icon-->
+            <button type="submit">
+            <i class="material-icons">send</i>
+            </button>
             <!-- <input type="submit" value="Submit" /> -->
           </form>
         </footer>
@@ -207,6 +225,21 @@ export default {
           text-align: center;
         }
 
+        //Enter button css
+        button[type="submit"]
+        {
+          display: block;
+          width: 100%;
+          padding: 10px 15px;
+          background-color: #1e59c7;
+          border-radius: 8px;
+
+          color: #fff;
+          font-size: 18px;
+          font-weight: 700;
+          text-align: center;
+        }
+
         h1 {
           color: rgb(88, 87, 87);
           font-size: 28px;
@@ -279,6 +312,16 @@ export default {
             }
           }
         }
+
+        //Make the fa-times button
+        .closebtn {
+          position: relative;
+          top: -50px;
+          right: -10px;
+          font-size: 60px;
+          cursor: pointer;
+          color: black;
+        }
       }
     }
   }
@@ -338,6 +381,7 @@ export default {
           .message-inner {
             max-width: 100%;
             .content {
+              border-radius: 20px 0px 20px 20px;
               max-width: 100%;
               color: #fff;
               font-weight: 600;
@@ -351,6 +395,7 @@ export default {
           .message-inner {
             max-width: 100%;
             .content {
+              border-radius: 0px 20px 20px 20px;
               max-width: 100%;
             }
           }
@@ -376,6 +421,10 @@ export default {
         font-size: 18px;
         border-radius: 5px;
         font-weight: 700;
+
+         &.right-btn{
+          float: right;
+        }
       }
 
       form {
@@ -405,6 +454,17 @@ export default {
           &::placeholder {
             color: #888;
             transition: 0.4s;
+          }
+        }
+        
+        //It is the send icon css
+        button{
+          background-color: #fff;
+          margin-top: 15px;
+          margin-left: 10px;
+          i{
+            font-size:24px;
+            color:lightblue;
           }
         }
 
