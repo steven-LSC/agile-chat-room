@@ -87,6 +87,7 @@ export default {
   props: ["room"],
   computed: {
     roomName() {
+      console.log("room = ",this.room);
       const map = {
         workout: "運動",
         date: "約會",

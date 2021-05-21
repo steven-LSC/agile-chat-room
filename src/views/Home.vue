@@ -1,5 +1,6 @@
 <template>
-  <Details v-if="room !== null" @back="back" :room="room"></Details>
+  <!--<Details v-if="room !== null" @back="back" :room="room"></Details>-->   <!--DEL--> 
+  <Loading v-if="room !== null" @back="back" :room="room"></Loading>          <!--ADD-->
   <base-layout v-else>
   <h1 style="text-align: center; margin-top:20vh;">Aloha!</h1>
     <h1 style="text-align: center; margin-top:30px;">選擇你要進入的聊天室</h1>
@@ -12,11 +13,13 @@
 </template>
 
 <script>
-import Details from './Details';
+//import Details from './Details';  //DEL
+import Loading from './Loading';  //ADD
 import { IonButton} from "@ionic/vue";
 export default {
   components:{
-    Details,
+    //Details,  //DEL
+    Loading,     //ADD
     IonButton
   },
   data(){
