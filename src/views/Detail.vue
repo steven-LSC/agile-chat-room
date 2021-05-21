@@ -1,65 +1,77 @@
 <template>
-    <ion-page>
-        <ion-content>
-            <div
-            class="view loading" 
-            v-if="state.position === null">                                     <!--Add-->
-            <h1 class="load">搜尋聊天室中</h1>
-            <h4>請開啟定位</h4>
-            </div>                                                              <!--/Add-->
-            <div
-            class="view login"
-            v-else-if="state.username === '' || state.username === null"
-            >                                                                   <!--Modify-->
-            <form class="login-form" @submit.prevent="Login">
-                <div class="form-inner">
-                <h1>進入{{ roomName }}聊天室</h1>
-                <label for="username">暱稱</label>
-                <input type="text" v-model="inputUsername" />
-                <p @click="$emit('back')">重選</p>
-                <!-- <input type="submit" value="Go" /> -->
-                </div>
-            </form>
+  <ion-page>
+    <ion-content>
+
+      <div>
+      <!-- Place the css linek reference-->
+      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+      <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+      </div>
+
+
+      <div
+        class="view login"
+        v-if="state.username === '' || state.username === null"
+      >
+        <form class="login-form" @submit.prevent="Login">
+          <div class="form-inner">
+            <span class="closebtn" @click="$emit('back')">×</span>
+            <h1>進入{{ roomName }}聊天室</h1>
+            <label for="username">暱稱</label>
+            <input type="text" v-model="inputUsername" />
+            <!-- <p @click="$emit('back')">重選</p> -->
+
+
+            <button type="submit">
+              進入
+            </button>
+            <!-- <input type="submit" value="Go" /> -->
+          </div>
+        </form>
+      </div>
+
+      <div class="view chat" ref="infoBox" id="view_chat" v-else>
+        <header>
+          <h1>Welcome, {{ state.username }}</h1>
+        </header>
+
+        <section class="chat-box">
+          <div
+            v-for="message in state.messages"
+            :key="message.key"
+            :class="
+              message.username == state.username
+                ? 'message current-user'
+                : 'message other-user'
+            "
+          >
+            <div class="message-inner">
+              <div class="username">{{ message.username }}</div>
+              <div class="content">{{ message.content }}</div>
             </div>
+          </div>
+        </section>
 
-            <div class="view chat" ref="infoBox" id="view_chat" v-else>
-            <header>
-                <h1>Welcome, {{ state.username }}</h1>
-            </header>
-
-            <section class="chat-box">
-                <div
-                v-for="message in state.messages"
-                :key="message.key"
-                :class="
-                    message.username == state.username
-                    ? 'message current-user'
-                    : 'message other-user'
-                "
-                >
-                <div class="message-inner">
-                    <div class="username">{{ message.username }}</div>
-                    <div class="content">{{ message.content }}</div>
-                </div>
-                </div>
-            </section>
-
-            <footer>
-                <p @click="out">Out</p>
-                <p @click="toBottom">Bottom</p>
-                <p @click="toTop">Top</p>
-                <form @submit.prevent="SendMessage">
-                <input
-                    type="text"
-                    v-model="inputMessage"
-                    placeholder="Write a message..."
-                />
-                <!-- <input type="submit" value="Submit" /> -->
-                </form>
-            </footer>
-            </div>
-        </ion-content>
-    </ion-page>
+        <footer>
+          <p @click="out"><i class="fa fa-sign-out fa-rotate-180" aria-hidden="true"></i> Out</p>
+          <p @click="toBottom" class="right-btn"><i class="fa fa-arrow-down" aria-hidden="true"></i></p>
+          <p @click="toTop" class="right-btn"><i class="fa fa-arrow-up" aria-hidden="true"></i></p>
+          <form @submit.prevent="SendMessage">
+            <input
+              type="text"
+              v-model="inputMessage"
+              placeholder="Write a message..."
+            />
+            <!-- arrow icon-->
+            <button type="submit">
+            <i class="material-icons">send</i>
+            </button>
+            <!-- <input type="submit" value="Submit" /> -->
+          </form>
+        </footer>
+      </div>
+    </ion-content>
+  </ion-page>
 </template>
 
 <script>
