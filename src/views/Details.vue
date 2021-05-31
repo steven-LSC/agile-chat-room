@@ -16,10 +16,10 @@
         <form class="login-form" @submit.prevent="Login">
           <div class="form-inner">
             <span class="closebtn" @click="$emit('back')">×</span>
+            <span class="district">所屬區域：蘆洲區</span>
             <h1>進入{{ roomName }}聊天室</h1>
-            <label for="username">暱稱</label>
+            <label for="username">暱稱 {{warnning}}</label>
             <input type="text" v-model="inputUsername" />
-            <!-- <p @click="$emit('back')">重選</p> -->
 
 
             <button type="submit">
@@ -32,7 +32,7 @@
 
       <div class="view chat" ref="infoBox" id="view_chat" v-else>
         <header>
-          <h1>Welcome, {{ state.username }}</h1>
+          <h1>蘆洲區<br>{{ roomName }}聊天室</h1>
         </header>
 
         <section class="chat-box">
@@ -54,6 +54,7 @@
 
         <footer>
           <p @click="out"><i class="fa fa-sign-out fa-rotate-180" aria-hidden="true"></i> Out</p>
+          <p @click="speechToText" class="right-btn">i</p>
           <p @click="toBottom" class="right-btn"><i class="fa fa-arrow-down" aria-hidden="true"></i></p>
           <p @click="toTop" class="right-btn"><i class="fa fa-arrow-up" aria-hidden="true"></i></p>
           <form @submit.prevent="SendMessage">
@@ -75,7 +76,7 @@
 </template>
 
 <script>
-import { reactive, onMounted, ref } from "vue";
+import { reactive, onMounted, ref, onBeforeMount } from "vue";
 import db from "../db";
 import { IonContent, IonPage } from "@ionic/vue";
 
@@ -103,12 +104,24 @@ export default {
       username: "",
       messages: [],
     });
+    let warnning = ref("");
+
+    let allUsernames = new Set();
+    let checkIntervel = null;
 
     const Login = () => {
-      if (inputUsername.value != "" || inputUsername.value != null) {
-        state.username = inputUsername.value;
-        inputUsername.value = "";
+      if (allUsernames.has(inputUsername.value)){
+        warnning.value = "此名稱已被使用";
+        return;
       }
+      if (inputUsername.value.trim() === ""){
+        warnning.value ="名稱不可為空";
+        return;
+      }
+
+      state.username = inputUsername.value;
+      inputUsername.value = "";
+
     };
 
     const out = () => {
@@ -119,7 +132,7 @@ export default {
       const dbRoomName = props.room + " messages";
       const messagesRef = db.database().ref(dbRoomName);
 
-      if (inputMessage.value === "" || inputMessage.value === null) {
+      if (inputMessage.value === ""|| inputMessage.value === null) {
         return;
       }
 
@@ -158,10 +171,62 @@ export default {
             username: data[key].username,
             content: data[key].content,
           });
+          console.log(data[key].username);
+          allUsernames.add(data[key].username);
         });
+
         state.messages = messages;
       });
+
+      checkIntervel =  setInterval(()=>{
+        const date = new Date();
+        if (date.getMinutes() % 15 === 0 && date.getSeconds() === 0){
+          console.log("Close and clean database.");
+          state.username = "";
+          db.database().ref("movie messages").remove();
+          db.database().ref("date messages").remove();
+          db.database().ref("workout messages").remove();
+          state.messages = [];
+        }
+      },1000)
+
     });
+
+    // Speech to text
+
+    var SpeechRecognition = SpeechRecognition || window.webkitSpeechRecognition;
+    var SpeechGrammarList = SpeechGrammarList || window.webkitSpeechGrammarList;
+
+    var grammar = "#JSGF V1.0;";
+
+    var recognition = new SpeechRecognition();
+    var speechRecognitionList = new SpeechGrammarList();
+    speechRecognitionList.addFromString(grammar, 1);
+    recognition.grammars = speechRecognitionList;
+    recognition.lang = "zh-TW";
+    recognition.interimResults = false;
+
+    recognition.onresult = function (event) {
+      var last = event.results.length - 1;
+      var command = event.results[last][0].transcript;
+      inputMessage.value += command ;
+    };
+
+    recognition.onspeechend = function () {
+      recognition.stop();
+    };
+
+    recognition.onerror = function (event) {
+      inputMessage.value = "Error occurred in recognition: " + event.error;
+    };
+
+    function speechToText(){
+      recognition.start();
+    }
+
+    onBeforeMount(()=>{
+      clearInterval(checkIntervel);
+    })
 
     return {
       inputUsername,
@@ -171,7 +236,9 @@ export default {
       SendMessage,
       out,
       toBottom,
-      toTop
+      toTop,
+      speechToText,
+      warnning
     };
   },
 };
@@ -320,6 +387,14 @@ export default {
           top: -30px;
           right: -10px;
           font-size: 35px;
+          cursor: pointer;
+          color: black;
+        }
+        .district {
+          position: relative;
+          top: -35px;
+          left: 140px;
+          font-size: 18px;
           cursor: pointer;
           color: black;
         }

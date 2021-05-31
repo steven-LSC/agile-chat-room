@@ -2,7 +2,12 @@
   <!--<Details v-if="room !== null" @back="back" :room="room"></Details>-->   <!--DEL--> 
   <Loading v-if="room !== null" @back="back" :room="room"></Loading>          <!--ADD-->
   <base-layout v-else>
-  <h1 style="text-align: center; margin-top:20vh;">Aloha!</h1>
+  <transition
+    enter-active-class="animated fadeIn zoomIn" 
+    leave-active-class="animated fadeOut zoomOut"
+  >
+    <h1 v-if="show" style="text-align: center; margin-top:20vh;">Aloha!</h1>
+  </transition>
     <h1 style="text-align: center; margin-top:30px;">選擇你要進入的聊天室</h1>
     <section style="margin-top:40px;">
       <ion-button @click="choose('movie')" color="tertiary" expand="block" >電影</ion-button>
@@ -25,6 +30,7 @@ export default {
   data(){
     return{
       room: null,
+      show: true
     }
   },
   methods:{
@@ -34,6 +40,12 @@ export default {
     back(){
       this.room = null;
     },
+  },
+  mounted: function() {
+    this.show = false;
+    setTimeout(()=>{
+      this.show = true;
+    },500);
   }
 }
 </script>
