@@ -54,7 +54,7 @@
 
         <footer>
           <p @click="out"><i class="fa fa-sign-out fa-rotate-180" aria-hidden="true"></i> Out</p>
-          <p @click="speechToText" class="right-btn">i</p>
+          <p @click="speechToText" class="right-btn mic"><i class="fa fa-microphone" aria-hidden="true"></i></p>
           <p @click="toBottom" class="right-btn"><i class="fa fa-arrow-down" aria-hidden="true"></i></p>
           <p @click="toTop" class="right-btn"><i class="fa fa-arrow-up" aria-hidden="true"></i></p>
           <form @submit.prevent="SendMessage">
@@ -500,6 +500,19 @@ export default {
 
          &.right-btn{
           float: right;
+
+          //mic css process
+          &.mic{
+            color: #363434;
+            background-color: #fff;
+          }
+
+          //mic is click action
+          &.mic:hover
+          {
+           color:#ff3333
+          }
+
         }
       }
 
