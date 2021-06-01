@@ -54,7 +54,7 @@
 
         <footer>
           <p @click="out"><i class="fa fa-sign-out fa-rotate-180" aria-hidden="true"></i> Out</p>
-          <p @click="speechToText" class="right-btn mic"><i class="fa fa-microphone" aria-hidden="true"></i></p>
+          <p @click="speechToText" :class="micCss"><i class="fa fa-microphone" aria-hidden="true"></i></p>
           <p @click="toBottom" class="right-btn"><i class="fa fa-arrow-down" aria-hidden="true"></i></p>
           <p @click="toTop" class="right-btn"><i class="fa fa-arrow-up" aria-hidden="true"></i></p>
           <form @submit.prevent="SendMessage">
@@ -108,6 +108,8 @@ export default {
 
     let allUsernames = new Set();
     let checkIntervel = null;
+
+    let micCss = ref("right-btn mic-end")
 
     const Login = () => {
       if (allUsernames.has(inputUsername.value)){
@@ -213,14 +215,17 @@ export default {
     };
 
     recognition.onspeechend = function () {
+      micCss.value = "right-btn mic-end";
       recognition.stop();
     };
 
     recognition.onerror = function (event) {
+      micCss.value = "right-btn mic-end";
       inputMessage.value = "Error occurred in recognition: " + event.error;
     };
 
     function speechToText(){
+      micCss.value = "right-btn mic-start";
       recognition.start();
     }
 
@@ -238,7 +243,8 @@ export default {
       toBottom,
       toTop,
       speechToText,
-      warnning
+      warnning,
+      micCss
     };
   },
 };
@@ -502,15 +508,16 @@ export default {
           float: right;
 
           //mic css process
-          &.mic{
+          &.mic-end{
             color: #363434;
             background-color: #fff;
           }
 
           //mic is click action
-          &.mic:hover
+          &.mic-start
           {
-           color:#ff3333
+            background-color: #fff;
+            color:#ff3333
           }
 
         }
